@@ -1,0 +1,38 @@
+---
+
+# Cert files permissions
+ssl_cert_owner_file: root
+ssl_cert_group_file: root
+ssl_cert_mode_file: 0640
+
+# Cert dir permissions
+ssl_cert_owner_dir: "{{ ssl_cert_owner_file }}"
+ssl_cert_group_dir: "{{ ssl_cert_group_file }}"
+ssl_cert_mode_dir: 0755
+
+# Server SSL key file location
+ssl_cert_server_key_file: null
+
+# Server SSL key
+ssl_cert_server_key: null
+
+# Server SSL certificate file location
+ssl_cert_server_cert_file: null
+
+# Server SSL certificate
+ssl_cert_server_cert: null
+
+# Server SSL key file location
+ssl_cert_ca_cert_file: null
+
+# Server SSL key
+ssl_cert_ca_cert: null
+
+# Whether to bundle the CA cert into the Server cert
+ssl_cert_server_cert_bundle: no
+
+# Name of the SSL service (e.g. nginx)
+ssl_cert_service: null
+
+# Whether to restart the SSL service
+ssl_cert_service_restart: yes
