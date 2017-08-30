@@ -99,15 +99,30 @@ Role variables
 --------------
 
 ```
-# Cert files permissions
-ssl_cert_owner_file: root
-ssl_cert_group_file: root
-ssl_cert_mode_file: 0640
-
 # Cert dir permissions
 ssl_cert_owner_dir: "{{ ssl_cert_owner_file }}"
 ssl_cert_group_dir: "{{ ssl_cert_group_file }}"
 ssl_cert_mode_dir: 0755
+
+# Files permissions for all certs
+ssl_cert_owner_file: root
+ssl_cert_group_file: root
+ssl_cert_mode_file: 0640
+
+# Files permissions for the SSL key
+ssl_cert_server_key_owner: "{{ ssl_cert_owner_file }}"
+ssl_cert_server_key_group: "{{ ssl_cert_group_file }}"
+ssl_cert_server_key_mode: "{{ ssl_cert_mode_file }}"
+
+# Files permissions for the SSL certificate
+ssl_cert_server_cert_owner: "{{ ssl_cert_owner_file }}"
+ssl_cert_server_cert_group: "{{ ssl_cert_group_file }}"
+ssl_cert_server_cert_mode: "{{ ssl_cert_mode_file }}"
+
+# Files permissions for the CA certificate
+ssl_cert_ca_cert_owner: "{{ ssl_cert_owner_file }}"
+ssl_cert_ca_cert_group: "{{ ssl_cert_group_file }}"
+ssl_cert_ca_cert_mode: "{{ ssl_cert_mode_file }}"
 
 # Server SSL key file location
 ssl_cert_server_key_file: null
@@ -121,14 +136,17 @@ ssl_cert_server_cert_file: null
 # Server SSL certificate
 ssl_cert_server_cert: null
 
-# Server SSL key file location
+# Server CA certificate file location
 ssl_cert_ca_cert_file: null
 
-# Server SSL key
+# Server CA certificate
 ssl_cert_ca_cert: null
 
 # Whether to bundle the CA cert into the Server cert
 ssl_cert_server_cert_bundle: no
+
+# Whether to install the CA cert even if bundle is enabled
+ssl_cert_server_cert_always: no
 
 # Name of the SSL service (e.g. nginx)
 ssl_cert_service: null

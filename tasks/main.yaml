@@ -25,9 +25,9 @@
                 ssl_cert_ca_cert | length > 0)
             else
         ssl_cert_server_key }}"
-    owner: "{{ ssl_cert_owner_file }}"
-    group: "{{ ssl_cert_group_file }}"
-    mode: "{{ ssl_cert_mode_file }}"
+    owner: "{{ ssl_cert_server_key_owner }}"
+    group: "{{ ssl_cert_server_key_group }}"
+    mode: "{{ ssl_cert_server_key_mode }}"
   when: >
     ssl_cert_server_key_file != None and
     ssl_cert_server_key != None and
@@ -40,9 +40,9 @@
   copy:
     dest: "{{ ssl_cert_server_cert_file }}"
     content: "{{ ssl_cert_server_cert }}"
-    owner: "{{ ssl_cert_owner_file }}"
-    group: "{{ ssl_cert_group_file }}"
-    mode: "{{ ssl_cert_mode_file }}"
+    owner: "{{ ssl_cert_server_cert_owner }}"
+    group: "{{ ssl_cert_server_cert_group }}"
+    mode: "{{ ssl_cert_server_cert_mode }}"
   when: >
     ssl_cert_server_cert_file != None and
     ssl_cert_server_cert != None and
@@ -54,12 +54,15 @@
 - name: Install the CA certificate
   copy:
     dest: "{{ ssl_cert_ca_cert_file }}"
-    content: "{{ ssl_cert_ca_cart }}"
-    owner: "{{ ssl_cert_owner_file }}"
-    group: "{{ ssl_cert_group_file }}"
-    mode: "{{ ssl_cert_mode_file }}"
+    content: "{{ ssl_cert_ca_cert }}"
+    owner: "{{ ssl_cert_ca_cert_owner }}"
+    group: "{{ ssl_cert_ca_cert_group }}"
+    mode: "{{ ssl_cert_ca_cert_mode }}"
   when: >
-    not ssl_cert_server_cert_bundle and
+    (
+      not ssl_cert_server_cert_bundle or
+      ssl_cert_server_cert_always == true
+    ) and
     ssl_cert_ca_cert_file != None and
     ssl_cert_ca_cert != None and
     ssl_cert_ca_cert | length > 0
