@@ -1,9 +1,29 @@
 ---
 
 # Cert dir permissions
-ssl_cert_owner_dir: "{{ ssl_cert_owner_file }}"
-ssl_cert_group_dir: "{{ ssl_cert_group_file }}"
-ssl_cert_mode_dir: 0755
+ssl_cert_dir_owner: "{{ ssl_cert_owner }}"
+ssl_cert_dir_group: "{{ ssl_cert_group }}"
+ssl_cert_dir_mode: "0755"
+
+# Files permissions for all certs
+ssl_cert_owner: root
+ssl_cert_group: root
+ssl_cert_mode: "0640"
+
+# Files permissions for the SSL key
+ssl_cert_key_owner: "{{ ssl_cert_owner }}"
+ssl_cert_key_group: "{{ ssl_cert_group }}"
+ssl_cert_key_mode: "{{ ssl_cert_mode }}"
+
+# Files permissions for the SSL certificate
+ssl_cert_crt_owner: "{{ ssl_cert_owner }}"
+ssl_cert_crt_group: "{{ ssl_cert_group }}"
+ssl_cert_crt_mode: "{{ ssl_cert_mode }}"
+
+# Files permissions for the CA certificate
+ssl_cert_ca_owner: "{{ ssl_cert_owner }}"
+ssl_cert_ca_group: "{{ ssl_cert_group }}"
+ssl_cert_ca_mode: "{{ ssl_cert_mode }}"
 
 # Files permissions for all certs
 ssl_cert_owner_file: root
@@ -26,31 +46,70 @@ ssl_cert_ca_cert_group: "{{ ssl_cert_group_file }}"
 ssl_cert_ca_cert_mode: "{{ ssl_cert_mode_file }}"
 
 # Server SSL key file location
-ssl_cert_server_key_file: null
+ssl_cert_key_file: null
 
 # Server SSL key
-ssl_cert_server_key: null
+ssl_cert_key: null
 
 # Server SSL certificate file location
-ssl_cert_server_cert_file: null
+ssl_cert_crt_file: null
 
 # Server SSL certificate
-ssl_cert_server_cert: null
+ssl_cert_crt: null
 
 # Server CA certificate file location
-ssl_cert_ca_cert_file: null
+ssl_cert_ca_file: null
 
 # Server CA certificate
-ssl_cert_ca_cert: null
+ssl_cert_ca: null
 
 # Whether to bundle the CA cert into the Server cert
-ssl_cert_server_cert_bundle: no
+ssl_cert_key_bundle: no
 
 # Whether to install the CA cert even if bundle is enabled
-ssl_cert_server_cert_always: no
+ssl_cert_crt_always: no
 
-# Name of the SSL service (e.g. nginx)
-ssl_cert_service: null
+# Handler name of the service using the SSL certs
+# (The handler must exist in some other role)
+ssl_cert_service_handler: null
 
-# Whether to restart the SSL service
-ssl_cert_service_restart: yes
+# Default list of certs to install
+ssl_cert_list__default:
+  - ca:
+      file: "{{ ssl_cert_ca_file }}"
+      content: "{{ ssl_cert_ca }}"
+      owner: "{{ ssl_cert_ca_owner }}"
+      group: "{{ ssl_cert_ca_group }}"
+      mode: "{{ ssl_cert_ca_mode }}"
+      dir_owner: "{{ ssl_cert_dir_owner }}"
+      dir_group: "{{ ssl_cert_dir_group }}"
+      dir_mode: "{{ ssl_cert_dir_mode }}"
+    crt:
+      file: "{{ ssl_cert_crt_file }}"
+      content: "{{ ssl_cert_crt }}"
+      owner: "{{ ssl_cert_crt_owner }}"
+      group: "{{ ssl_cert_crt_group }}"
+      mode: "{{ ssl_cert_crt_mode }}"
+      dir_owner: "{{ ssl_cert_dir_owner }}"
+      dir_group: "{{ ssl_cert_dir_group }}"
+      dir_mode: "{{ ssl_cert_dir_mode }}"
+    key:
+      file: "{{ ssl_cert_key_file }}"
+      content: "{{ ssl_cert_key }}"
+      owner: "{{ ssl_cert_key_owner }}"
+      group: "{{ ssl_cert_key_group }}"
+      mode: "{{ ssl_cert_key_mode }}"
+      dir_owner: "{{ ssl_cert_dir_owner }}"
+      dir_group: "{{ ssl_cert_dir_group }}"
+      dir_mode: "{{ ssl_cert_dir_mode }}"
+    key_bundle: "{{ ssl_cert_key_bundle }}"
+    crt_always: "{{ ssl_cert_crt_always }}"
+    service_handler: "{{ ssl_cert_service_handler }}"
+
+# Custom list of certs to install
+ssl_cert_list__custom: []
+
+# Final list of certs to install
+ssl_cert_list: "{{
+  ssl_cert_list__default +
+  ssl_cert_list__custom }}"

@@ -8,8 +8,10 @@ galaxy_info:
   platforms:
     - name: EL
       versions:
-        - 6
-        - 7
-  categories:
+        - all
+    - name: Ubuntu
+      versions:
+        - all
+  galaxy_tags:
     - web
 dependencies: []

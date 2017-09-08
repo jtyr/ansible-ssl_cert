@@ -1,9 +1,0 @@
----
-
-- name: Restart SSL service
-  service:
-    name: "{{ ssl_cert_service }}"
-    state: restarted
-  when: >
-    ssl_cert_service != None and
-    ssl_cert_service_restart

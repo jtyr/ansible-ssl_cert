@@ -1,0 +1,121 @@
+---
+
+- name: Make sure the directories exist
+  file:
+    path: "{{ item.file | dirname }}"
+    owner: "{{ item.dir_owner | default(ssl_cert_dir_owner) }}"
+    group: "{{ item.dir_group | default(ssl_cert_dir_group) }}"
+    mode: "{{ item.dir_mode | default(ssl_cert_dir_mode) }}"
+    state: directory
+  when: >
+    item != None and
+    'file' in item and
+    item.file != None
+  with_items:
+    - "{{ ssl_cert_item.key | default(None) }}"
+    - "{{ ssl_cert_item.crt | default(None) }}"
+    - "{{ ssl_cert_item.ca | default(None) }}"
+  tags:
+    - ssl_cert_dir
+
+- name: Install the Server key
+  copy:
+    dest: "{{ ssl_cert_item.key.file }}"
+    content: "{{
+      (ssl_cert_item.key.content + ssl_cert_item.crt.content)
+        if (
+          (
+            ssl_cert_key_bundle == true or (
+              'key_bundle' in ssl_cert_item and
+              ssl_cert_item.key_bundle == true
+            )
+          ) and
+          'crt' in ssl_cert_item and
+          'content' in ssl_cert_item.crt and
+          ssl_cert_item.crt.content != None and
+          ssl_cert_item.crt.content | length > 0)
+        else
+      ssl_cert_item.key.content }}"
+    owner: "{{ ssl_cert_item.key.owner | default(ssl_cert_key_owner) }}"
+    group: "{{ ssl_cert_item.key.group | default(ssl_cert_key_group) }}"
+    mode: "{{ ssl_cert_item.key.mode | default(ssl_cert_key_mode) }}"
+  when: >
+    'key' in ssl_cert_item and
+    'file' in ssl_cert_item.key and
+    'content' in ssl_cert_item.key and
+    ssl_cert_item.key.file != None and
+    ssl_cert_item.key.content != None and
+    ssl_cert_item.key.content | length > 0
+  notify: "{{
+    ssl_cert_item.service_handler
+      if 'service_handler' in ssl_cert_item
+      else
+    ssl_cert_service_handler
+      if ssl_cert_service_handler != None
+      else
+    omit }}"
+  tags:
+    - ssl_cert_key
+
+- name: Install the Server certificate
+  copy:
+    dest: "{{ ssl_cert_item.crt.file }}"
+    content: "{{ ssl_cert_item.crt.content }}"
+    owner: "{{ ssl_cert_item.crt.owner | default(ssl_cert_crt_owner) }}"
+    group: "{{ ssl_cert_item.crt.group | default(ssl_cert_crt_group) }}"
+    mode: "{{ ssl_cert_item.crt.mode | default(ssl_cert_crt_mode) }}"
+  when: >
+    'crt' in ssl_cert_item and
+    'file' in ssl_cert_item.crt and
+    'content' in ssl_cert_item.crt and
+    ssl_cert_item.crt.file != None and
+    ssl_cert_item.crt.content != None and
+    ssl_cert_item.crt.content | length > 0
+  notify: "{{
+    ssl_cert_item.service_handler
+      if 'service_handler' in ssl_cert_item
+      else
+    ssl_cert_service_handler
+      if ssl_cert_service_handler != None
+      else
+    omit }}"
+  tags:
+    - ssl_cert_crt
+
+- name: Install the CA certificate
+  copy:
+    dest: "{{ ssl_cert_item.ca.file }}"
+    content: "{{ ssl_cert_item.ca.content }}"
+    owner: "{{ ssl_cert_item.ca.owner | default(ssl_cert_ca_owner) }}"
+    group: "{{ ssl_cert_item.ca.group | default(ssl_cert_ca_group) }}"
+    mode: "{{ ssl_cert_item.ca.mode | default(ssl_cert_ca_mode) }}"
+  when: >
+    (
+      (
+        ssl_cert_key_bundle == false and (
+          'key_bundle' not in ssl_cert_item or
+          ssl_cert_item.key_bundle == false
+        )
+      ) or (
+        ssl_cert_crt_always == true or (
+          'crt_always' in ssl_cert_item and
+          ssl_cert_item.key_bundle == true
+        )
+      )
+    ) and
+    'ca' in ssl_cert_item and
+    'file' in ssl_cert_item.ca and
+    'content' in ssl_cert_item.ca and
+    ssl_cert_item.ca.file != None and
+    ssl_cert_item.ca.content != None and
+    ssl_cert_item.ca.content | length > 0
+  notify: "{{
+    ssl_cert_item.service_handler
+      if 'service_handler' in ssl_cert_item
+      else
+    ssl_cert_service_handler
+      if ssl_cert_service_handler != None
+      else
+    omit }}"
+  tags:
+    - ssl_cert_ca
