@@ -1,6 +1,6 @@
 ---
 
-- include: cert.yaml
+- include_tasks: cert.yaml
   with_items: "{{ ssl_cert_list }}"
   loop_control:
     loop_var: ssl_cert_item
