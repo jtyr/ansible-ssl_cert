@@ -11,6 +11,15 @@
     item != None and
     'file' in item and
     item.file != None
+  no_log: "{{
+    true
+      if (
+            'key' in ssl_cert_item and
+            ssl_cert_item.key.content != None and
+            ssl_cert_item.crt.content | length > 0 and
+            ssl_cert_force_show_log == false)
+      else
+    false }}"
   with_items:
     - "{{ ssl_cert_item.key | default(None) }}"
     - "{{ ssl_cert_item.crt | default(None) }}"
@@ -48,12 +57,26 @@
     ssl_cert_item.key.content | length > 0
   notify: "{{
     ssl_cert_item.service_handler
-      if 'service_handler' in ssl_cert_item
-      else
+      if (
+        'service_handler' in ssl_cert_item and
+        ssl_cert_item.service_handler != None and
+        ssl_cert_item.service_handler | length > 0
+      ) else
     ssl_cert_service_handler
-      if ssl_cert_service_handler != None
+      if (
+        ssl_cert_service_handler != None and
+        ssl_cert_service_handler | length > 0
+      ) else
+    [] }}"
+  no_log: "{{
+    true
+      if (
+            'key' in ssl_cert_item and
+            ssl_cert_item.key.content != None and
+            ssl_cert_item.crt.content | length > 0 and
+            ssl_cert_force_show_log == false)
       else
-    omit }}"
+    false }}"
   tags:
     - ssl_cert_key
 
@@ -73,12 +96,17 @@
     ssl_cert_item.crt.content | length > 0
   notify: "{{
     ssl_cert_item.service_handler
-      if 'service_handler' in ssl_cert_item
-      else
+      if (
+        'service_handler' in ssl_cert_item and
+        ssl_cert_item.service_handler != None and
+        ssl_cert_item.service_handler | length > 0
+      ) else
     ssl_cert_service_handler
-      if ssl_cert_service_handler != None
-      else
-    omit }}"
+      if (
+        ssl_cert_service_handler != None and
+        ssl_cert_service_handler | length > 0
+      ) else
+    [] }}"
   tags:
     - ssl_cert_crt
 
@@ -111,11 +139,16 @@
     ssl_cert_item.ca.content | length > 0
   notify: "{{
     ssl_cert_item.service_handler
-      if 'service_handler' in ssl_cert_item
-      else
+      if (
+        'service_handler' in ssl_cert_item and
+        ssl_cert_item.service_handler != None and
+        ssl_cert_item.service_handler | length > 0
+      ) else
     ssl_cert_service_handler
-      if ssl_cert_service_handler != None
-      else
-    omit }}"
+      if (
+        ssl_cert_service_handler != None and
+        ssl_cert_service_handler | length > 0
+      ) else
+    [] }}"
   tags:
     - ssl_cert_ca

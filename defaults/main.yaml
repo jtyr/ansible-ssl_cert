@@ -13,7 +13,7 @@ ssl_cert_mode: "0640"
 # Files permissions for the SSL key
 ssl_cert_key_owner: "{{ ssl_cert_owner }}"
 ssl_cert_key_group: "{{ ssl_cert_group }}"
-ssl_cert_key_mode: "{{ ssl_cert_mode }}"
+ssl_cert_key_mode: "0600"
 
 # Files permissions for the SSL certificate
 ssl_cert_crt_owner: "{{ ssl_cert_owner }}"
@@ -24,26 +24,6 @@ ssl_cert_crt_mode: "{{ ssl_cert_mode }}"
 ssl_cert_ca_owner: "{{ ssl_cert_owner }}"
 ssl_cert_ca_group: "{{ ssl_cert_group }}"
 ssl_cert_ca_mode: "{{ ssl_cert_mode }}"
-
-# Files permissions for all certs
-ssl_cert_owner_file: root
-ssl_cert_group_file: root
-ssl_cert_mode_file: 0640
-
-# Files permissions for the SSL key
-ssl_cert_server_key_owner: "{{ ssl_cert_owner_file }}"
-ssl_cert_server_key_group: "{{ ssl_cert_group_file }}"
-ssl_cert_server_key_mode: "{{ ssl_cert_mode_file }}"
-
-# Files permissions for the SSL certificate
-ssl_cert_server_cert_owner: "{{ ssl_cert_owner_file }}"
-ssl_cert_server_cert_group: "{{ ssl_cert_group_file }}"
-ssl_cert_server_cert_mode: "{{ ssl_cert_mode_file }}"
-
-# Files permissions for the CA certificate
-ssl_cert_ca_cert_owner: "{{ ssl_cert_owner_file }}"
-ssl_cert_ca_cert_group: "{{ ssl_cert_group_file }}"
-ssl_cert_ca_cert_mode: "{{ ssl_cert_mode_file }}"
 
 # Server SSL key file location
 ssl_cert_key_file: null
@@ -68,6 +48,9 @@ ssl_cert_key_bundle: no
 
 # Whether to install the CA cert even if bundle is enabled
 ssl_cert_crt_always: no
+
+# Force to show logs even if there is a private key in the data
+ssl_cert_force_show_log: no
 
 # Handler name of the service using the SSL certs
 # (The handler must exist in some other role)
