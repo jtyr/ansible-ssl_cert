@@ -11,15 +11,7 @@
     item != None and
     'file' in item and
     item.file != None
-  no_log: "{{
-    true
-      if (
-            'key' in ssl_cert_item and
-            ssl_cert_item.key.content != None and
-            ssl_cert_item.crt.content | length > 0 and
-            ssl_cert_force_show_log == false)
-      else
-    false }}"
+  no_log: "{{ false if ssl_cert_force_show_log == true else true }}"
   with_items:
     - "{{ ssl_cert_item.key | default(None) }}"
     - "{{ ssl_cert_item.crt | default(None) }}"
@@ -68,15 +60,7 @@
         ssl_cert_service_handler | length > 0
       ) else
     [] }}"
-  no_log: "{{
-    true
-      if (
-            'key' in ssl_cert_item and
-            ssl_cert_item.key.content != None and
-            ssl_cert_item.crt.content | length > 0 and
-            ssl_cert_force_show_log == false)
-      else
-    false }}"
+  no_log: "{{ false if ssl_cert_force_show_log == true else true }}"
   tags:
     - ssl_cert_key
 
